@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Fraud Shield</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="bg-scene"></div>
+<canvas id="matrixCanvas"></canvas>
+<canvas id="particleCanvas"></canvas>
+<audio id="bgMusic" src="/static/music.mp3" loop></audio>
+
+<div class="page-wrap">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-icon">🛡️</div>
+      <div>
+        <div class="brand-name">Fraud Shield</div>
+        <span class="brand-sub">Credit Card Fraud Detection</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="user-badge">
+        <span class="live-dot"></span>
+        <span>👤 {{ session['username'] }}</span>
+      </div>
+      <button class="music-btn" id="musicBtn" title="Toggle Music">
+        🔇
+        <div class="music-ring" id="mRing1" style="display:none;"></div>
+        <div class="music-ring2" id="mRing2" style="display:none;"></div>
+      </button>
+      {% if session.get('is_admin') %}
+        <a href="/admin" class="btn-sm btn-purple">⚙️ Admin</a>
+      {% endif %}
+      <a href="/logout" class="btn-sm btn-red">Logout</a>
+    </div>
+  </div>
+
+  <div class="dash-body">
+
+    <!-- 3D Card -->
+    <div class="dash-card-center">
+      <div class="card-3d-wrap" style="width:300px;">
+        <div class="card-3d" id="dashCard">
+          <div class="card-face card-front">
+            <div class="card-logo-row">
+              <div class="card-circles"><div class="c1"></div><div class="c2"></div></div>
+              <div class="card-brand-text"><span>FRAUD SHIELD</span><small>SECURE</small></div>
+            </div>
+            <div class="card-chip">
+              <div class="chip-c"></div><div class="chip-c"></div><div class="chip-c"></div>
+              <div class="chip-c"></div><div class="chip-c"></div><div class="chip-c"></div>
+              <div class="chip-c"></div><div class="chip-c"></div><div class="chip-c"></div>
+            </div>
+            <div class="card-number">•••• •••• •••• 4821</div>
+            <div class="card-bottom">
+              <div><div class="ci-label">Card Holder</div><div class="ci-value">FRAUD DETECTOR</div></div>
+              <div><div class="ci-label">Expires</div><div class="ci-value">12/28</div></div>
+            </div>
+          </div>
+          <div class="card-face card-back">
+            <div class="card-stripe"></div>
+            <div class="card-sig"><div class="sig-box"><span class="cvv">•••</span></div></div>
+            <div class="card-back-lbl">FRAUD DETECTION SHIELD</div>
+          </div>
+        </div>
+      </div>
+      <p class="dash-card-hint">Hover to tilt · Click to flip</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('manual',this)">🔍 Manual Analysis</button>
+      <button class="tab-btn" onclick="switchTab('csv',this)">📂 Batch CSV Upload</button>
+    </div>
+
+    <!-- MANUAL PANEL -->
+    <div class="panel active" id="panel-manual">
+      <div class="glass-card panel-card">
+        <div class="panel-title">🔍 Transaction Analysis</div>
+        <form id="predForm" class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Amount ($)</label>
+            <div class="input-wrap"><input class="form-input no-icon" type="number" name="amount" step="0.01" placeholder="e.g. 250.00" required onkeydown="return event.key!=='e'&&event.key!=='E'"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Transaction Frequency</label>
+            <div class="input-wrap"><input class="form-input no-icon" type="number" name="transaction_frequency" placeholder="e.g. 5" required onkeydown="return event.key!=='e'&&event.key!=='E'"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Hour of Day (0–23)</label>
+            <div class="input-wrap"><input class="form-input no-icon" type="number" name="hour" min="0" max="23" placeholder="e.g. 14" required onkeydown="return event.key!=='e'&&event.key!=='E'"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <div class="input-wrap">
+              <select class="form-select no-icon" name="category">
+                <option value="shopping">Shopping</option>
+                <option value="food">Food & Dining</option>
+                <option value="travel">Travel</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Device Type</label>
+            <div class="input-wrap">
+              <select class="form-select no-icon" name="device_type">
+                <option value="mobile">Mobile</option>
+                <option value="desktop">Desktop</option>
+                <option value="tablet">Tablet</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">City</label>
+            <div class="input-wrap">
+              <select class="form-select no-icon" name="city">
+                <option value="New York">New York</option>
+                <option value="Los Angeles">Los Angeles</option>
+                <option value="Chicago">Chicago</option>
+                <option value="Houston">Houston</option>
+                <option value="Phoenix">Phoenix</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Device?</label>
+            <div class="input-wrap">
+              <select class="form-select no-icon" name="new_device">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">New City?</label>
+            <div class="input-wrap">
+              <select class="form-select no-icon" name="new_city">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-analyze" type="submit" id="analyzeBtn">
+            <span id="analyzeBtnTxt">🔎 Analyze Transaction</span>
+          </button>
+        </form>
+
+        <!-- Result -->
+        <div class="result-box" id="predResult">
+          <div class="result-head">
+            <div class="res-icon" id="resIcon"></div>
+            <div>
+              <div class="res-title" id="resTitle"></div>
+              <div class="res-conf" id="resConf"></div>
+            </div>
+          </div>
+          <div class="conf-bar"><div class="conf-fill" id="confFill" style="width:0%;"></div></div>
+          <div class="risk-label">Risk Factors</div>
+          <div id="riskList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CSV PANEL -->
+    <div class="panel" id="panel-csv">
+      <div class="glass-card panel-card">
+        <div class="panel-title">📂 Batch Analysis</div>
+        <p style="font-size:13px;color:rgba(167,139,250,0.45);margin-bottom:18px;line-height:1.6;">
+          Upload a CSV or XLSX file with columns:<br>
+          <code style="color:#a78bfa;font-size:11px;">transaction_id, amount, category, city, device_type, hour, transaction_frequency, new_device, new_city</code>
+        </p>
+        <form method="POST" action="/upload_csv" enctype="multipart/form-data" id="csvForm">
+          <div class="upload-zone" onclick="document.getElementById('csvFile').click()">
+            <div class="up-icon" id="uploadIcon">📁</div>
+            <div class="up-text">Click to choose a CSV or XLSX file</div>
+            <div class="up-sub">Supports .csv and .xlsx formats</div>
+            <div id="fileNameDisplay"></div>
+          </div>
+          <input type="file" id="csvFile" name="file" accept=".csv,.xlsx" required style="display:none;" onchange="onFileChange(this)">
+          <button class="btn-analyze" type="submit" id="csvBtn" style="margin-top:0;">
+            <span id="csvBtnTxt">🚀 Upload &amp; Analyze</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="/static/script.js"></script>
+<script>
+ // ===== 3D Card Mouse Tracking =====
+
+const card = document.getElementById('dashCard');
+let isFlipped = false;
+
+card.addEventListener('mousemove', function(e) {
+  if (isFlipped) return;
+
+  const rect = this.getBoundingClientRect();
+  const x = (e.clientX - rect.left) / rect.width - 0.5;
+  const y = (e.clientY - rect.top) / rect.height - 0.5;
+
+  this.style.animation = 'none';
+  this.style.transform =
+    `rotateY(${x * 30}deg) rotateX(${-y * 30}deg) scale(1.05)`;
+});
+
+card.addEventListener('mouseleave', function() {
+  if (isFlipped) return;
+  this.style.animation = '';
+  this.style.transform = '';
+});
+
+card.addEventListener('click', function() {
+  isFlipped = !isFlipped;
+  this.style.animation = 'none';
+  this.classList.toggle('flipped');
+});
+
+
+  // Tab switching
+  function switchTab(name, btn) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // File change
+  function onFileChange(input) {
+    const d = document.getElementById('fileNameDisplay');
+    const i = document.getElementById('uploadIcon');
+    if(input.files[0]) {
+      d.textContent = '✅ ' + input.files[0].name;
+      i.textContent = '✅';
+    } else {
+      d.textContent = '';
+      i.textContent = '📁';
+    }
+  }
+
+  // CSV button loading
+  document.getElementById('csvForm').addEventListener('submit', function(){
+    document.getElementById('csvBtnTxt').innerHTML = '<div class="spinner" style="margin:0 auto;"></div>';
+  });
+
+  // Prediction
+  document.getElementById('predForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('analyzeBtnTxt');
+    btn.innerHTML = '<div class="spinner" style="margin:0 auto;"></div>';
+
+    const fd = new FormData(this);
+    const data = Object.fromEntries(fd);
+
+    try {
+      const res = await fetch('/predict', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+      const json = await res.json();
+      showResult(json);
+    } catch(err) {
+      alert('Prediction failed. Please try again.');
+    }
+    btn.innerHTML = '🔎 Analyze Transaction';
+  });
+
+  function showResult(json) {
+    const box = document.getElementById('predResult');
+    const isFraud = json.result === 1;
+    const conf = json.confidence || 0;
+
+    box.className = 'result-box show ' + (isFraud ? 'fraud' : 'safe');
+    document.getElementById('resIcon').textContent = isFraud ? '🚨' : '✅';
+    document.getElementById('resTitle').textContent = isFraud ? 'FRAUD DETECTED' : 'SAFE TRANSACTION';
+    document.getElementById('resTitle').className = 'res-title ' + (isFraud ? 'fraud' : 'safe');
+    document.getElementById('resConf').textContent = 'Confidence: ' + conf + '%';
+
+    const fill = document.getElementById('confFill');
+    fill.className = 'conf-fill ' + (isFraud ? 'fraud' : 'safe');
+    setTimeout(() => { fill.style.width = conf + '%'; }, 50);
+
+    const rl = document.getElementById('riskList');
+    rl.innerHTML = '';
+    const reasons = getRiskFactors(json);
+    reasons.forEach(r => {
+      rl.innerHTML += '<div class="risk-item"><span>⚠️</span><span>' + r + '</span></div>';
+    });
+  }
+
+  function getRiskFactors(json) {
+    const reasons = [];
+    const fd = new FormData(document.getElementById('predForm'));
+    const d = Object.fromEntries(fd);
+    if(parseFloat(d.amount) > 3000) reasons.push('High transaction amount ($' + parseFloat(d.amount).toFixed(2) + ')');
+    if(parseInt(d.hour) < 5) reasons.push('Unusual transaction hour (' + d.hour + ':00)');
+    if(d.new_device === '1') reasons.push('New device detected');
+    if(d.new_city === '1') reasons.push('Transaction from new city');
+    if(parseFloat(d.transaction_frequency) > 10) reasons.push('High transaction frequency');
+    if(d.city === 'Other') reasons.push('Transaction from unknown city');
+    return reasons;
+  }
+</script>
+</body>
+</html>

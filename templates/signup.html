@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up — Fraud Shield</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="bg-scene"></div>
+<canvas id="matrixCanvas"></canvas>
+<canvas id="particleCanvas"></canvas>
+
+<div class="page-wrap auth-layout">
+  <div style="width:100%;max-width:460px;animation:fadeUp 0.8s cubic-bezier(0.23,1,0.32,1) both;">
+    <div class="glass-card form-card">
+      <div class="form-icon">✨</div>
+      <div class="form-title">Create Account</div>
+      <div class="form-sub">Join the Fraud Shield network</div>
+
+      {% for cat, msg in get_flashed_messages(with_categories=True) %}
+        <div class="flash {{ cat }}"><span>{{ '⚠️' if cat == 'error' else '✅' }}</span> {{ msg }}</div>
+      {% endfor %}
+
+      <form method="POST" action="/signup" id="signupForm">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <div class="input-wrap">
+            <span class="input-icon">👤</span>
+            <input class="form-input" type="text" name="username" placeholder="Choose a username" required autocomplete="username">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <div class="input-wrap">
+            <span class="input-icon">📧</span>
+            <input class="form-input" type="email" name="email" placeholder="your@email.com" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input class="form-input" type="password" id="signupPass" name="password" placeholder="At least 6 characters" required autocomplete="new-password">
+            <button type="button" class="pass-toggle" onclick="togglePass('signupPass',this)">👁️</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔑</span>
+            <input class="form-input" type="password" id="confirmPass" name="confirm_password" placeholder="Repeat your password" required autocomplete="new-password">
+            <button type="button" class="pass-toggle" onclick="togglePass('confirmPass',this)">👁️</button>
+          </div>
+        </div>
+        <button class="btn-primary" type="submit" id="signupBtn">
+          <span id="signupBtnText">🚀 Create Account</span>
+        </button>
+      </form>
+
+      <div class="link-row">Already have an account? <a href="/login">Sign In</a></div>
+    </div>
+  </div>
+</div>
+
+<script src="/static/script.js"></script>
+<script>
+  document.getElementById('signupForm').addEventListener('submit', function(e) {
+    const p = document.getElementById('signupPass').value;
+    const c = document.getElementById('confirmPass').value;
+    if (p !== c) {
+      e.preventDefault();
+      alert('Passwords do not match!');
+      return;
+    }
+    document.getElementById('signupBtnText').innerHTML = '<div class="spinner" style="margin:0 auto;"></div>';
+  });
+</script>
+</body>
+</html>

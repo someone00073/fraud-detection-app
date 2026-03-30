@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSV Results — Fraud Shield</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="bg-scene"></div>
+<canvas id="matrixCanvas"></canvas>
+<canvas id="particleCanvas"></canvas>
+
+<div class="page-wrap">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-icon">📊</div>
+      <div>
+        <div class="brand-name">Batch Results</div>
+        <span class="brand-sub">{{ rows|length }} transactions processed</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <a href="/download_output" class="btn-sm btn-purple">⬇️ Download CSV</a>
+      <a href="/dashboard" class="btn-sm btn-red">← Dashboard</a>
+    </div>
+  </div>
+
+  <div class="results-body">
+
+    <!-- Stats -->
+    {% set fraud_count = rows|selectattr('fraud','equalto',1)|list|length %}
+    {% set safe_count = rows|selectattr('fraud','equalto',0)|list|length %}
+    {% set total = rows|length %}
+
+    <div class="stat-cards">
+      <div class="stat-card"><div class="stat-num purple">{{ total }}</div><div class="stat-lbl2">📋 Total Transactions</div></div>
+      <div class="stat-card"><div class="stat-num red">{{ fraud_count }}</div><div class="stat-lbl2">🚨 Fraudulent</div></div>
+      <div class="stat-card"><div class="stat-num green">{{ safe_count }}</div><div class="stat-lbl2">✅ Safe</div></div>
+    </div>
+
+    <!-- Ratio bar -->
+    {% if total > 0 %}
+    <div class="ratio-bar">
+      <div class="ratio-safe" style="width:{{ (safe_count/total*100)|round(1) }}%;"></div>
+      <div class="ratio-fraud" style="width:{{ (fraud_count/total*100)|round(1) }}%;"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(167,139,250,0.4);margin-top:-12px;margin-bottom:16px;">
+      <span>✅ Safe ({{ safe_count }})</span>
+      <span>Fraud rate: {{ (fraud_count/total*100)|round(1) }}%</span>
+      <span>🚨 Fraud ({{ fraud_count }})</span>
+    </div>
+    {% endif %}
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <div class="table-hdr">
+        <div class="table-hdr-title">Transaction Analysis</div>
+        <span style="font-size:12px;color:rgba(167,139,250,0.4);">{{ rows|length }} rows</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Transaction ID</th>
+              <th>Amount</th>
+              <th>Category</th>
+              <th>City</th>
+              <th>Device</th>
+              <th>Hour</th>
+              <th>Frequency</th>
+              <th>New Device</th>
+              <th>New City</th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+            <tr>
+              <td style="color:rgba(167,139,250,0.3);">{{ loop.index }}</td>
+              <td style="font-family:monospace;font-size:11px;color:rgba(167,139,250,0.65);">{{ row.transaction_id or '—' }}</td>
+              <td style="font-weight:600;">${{ "%.2f"|format(row.amount|float) }}</td>
+              <td style="text-transform:capitalize;">{{ row.category or '—' }}</td>
+              <td>{{ row.city or '—' }}</td>
+              <td style="text-transform:capitalize;">{{ row.device_type or '—' }}</td>
+              <td>{{ row.hour or '—' }}</td>
+              <td>{{ row.transaction_frequency or '—' }}</td>
+              <td>{{ 'Yes' if row.new_device|string == '1' else 'No' }}</td>
+              <td>{{ 'Yes' if row.new_city|string == '1' else 'No' }}</td>
+              <td>
+                {% if row.fraud == 1 %}
+                  <span class="badge fraud">🚨 Fraud</span>
+                {% else %}
+                  <span class="badge safe">✅ Safe</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>

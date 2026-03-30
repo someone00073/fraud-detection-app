@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — Fraud Shield</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="bg-scene"></div>
+<canvas id="matrixCanvas"></canvas>
+<canvas id="particleCanvas"></canvas>
+<audio id="bgMusic" src="/static/music.mp3" loop></audio>
+
+<div class="page-wrap">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-icon">⚙️</div>
+      <div>
+        <div class="brand-name">Admin Panel</div>
+        <span class="brand-sub">User Management System</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="music-btn" id="musicBtn" title="Toggle Music">
+        🔇
+        <div class="music-ring" id="mRing1" style="display:none;"></div>
+        <div class="music-ring2" id="mRing2" style="display:none;"></div>
+      </button>
+      <a href="/dashboard" class="btn-sm btn-purple">← Dashboard</a>
+      <a href="/logout" class="btn-sm btn-red">Logout</a>
+    </div>
+  </div>
+
+  <div class="admin-body">
+
+    {% for cat, msg in get_flashed_messages(with_categories=True) %}
+      <div class="flash {{ cat }}" style="margin-bottom:16px;">
+        <span>{{ '✅' if cat=='success' else '⚠️' }}</span> {{ msg }}
+      </div>
+    {% endfor %}
+
+    <!-- Stats -->
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="stat-num purple">{{ users|length }}</div>
+        <div class="stat-lbl2">👥 Total Users</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num green">{{ users|selectattr('status','equalto','active')|list|length }}</div>
+        <div class="stat-lbl2">✅ Active</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num red">{{ users|selectattr('status','equalto','blocked')|list|length }}</div>
+        <div class="stat-lbl2">🚫 Blocked</div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <div class="table-hdr">
+        <div class="table-hdr-title">👥 Registered Users</div>
+        <div style="font-size:12px;color:rgba(167,139,250,0.4);">{{ users|length }} users</div>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Password Hash</th>
+              <th>Created At</th>
+              <th>Last Login</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr>
+              <td style="color:rgba(167,139,250,0.3);">{{ loop.index }}</td>
+              <td style="font-weight:600;color:rgba(255,255,255,0.9);">{{ user.username }}</td>
+              <td style="color:rgba(167,139,250,0.65);">{{ user.email_id }}</td>
+              <td>
+                <span class="pass-hash" data-hash="{{ user.password }}" onclick="toggleHash(this)">•••••••••••••• 👁️</span>
+              </td>
+              <td style="font-size:12px;color:rgba(255,255,255,0.4);">{{ user.created_at or '—' }}</td>
+              <td style="font-size:12px;color:rgba(255,255,255,0.4);">{{ user.last_login or '—' }}</td>
+              <td>
+                {% if user.status == 'active' %}
+                  <span class="badge-active">● Active</span>
+                {% else %}
+                  <span class="badge-blocked">● Blocked</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if user.username != 'admin' %}
+                  <form method="POST" action="/admin/toggle_block" style="display:inline;">
+                    <input type="hidden" name="username" value="{{ user.username }}">
+                    {% if user.status == 'active' %}
+                      <button class="btn-blk do-block" type="submit">🚫 Block</button>
+                    {% else %}
+                      <button class="btn-blk do-unblock" type="submit">✅ Unblock</button>
+                    {% endif %}
+                  </form>
+                {% else %}
+                  <span style="color:rgba(255,255,255,0.2);font-size:12px;">—</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="8" style="text-align:center;color:rgba(167,139,250,0.3);padding:40px;">No users registered yet.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="/static/script.js"></script>
+<script>
+  function toggleHash(el) {
+    const hash = el.getAttribute('data-hash');
+    if(el.textContent.includes('•')) {
+      el.textContent = hash.slice(0,24) + '... 👁️';
+    } else {
+      el.textContent = '•••••••••••••• 👁️';
+    }
+  }
+</script>
+</body>
+</html>

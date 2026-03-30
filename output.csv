@@ -1,0 +1,131 @@
+transaction_id,amount,category,city,device_type,hour,transaction_frequency,new_device,new_city,fraud
+TXN0001,3197.49,shopping,Other,desktop,7,8,0,0,0
+TXN0002,4461.01,shopping,Phoenix,desktop,1,1,0,0,1
+TXN0003,3010.49,other,Los Angeles,tablet,20,23,1,0,1
+TXN0004,1391.68,shopping,Los Angeles,tablet,13,11,1,0,0
+TXN0005,3817.71,shopping,New York,desktop,3,12,1,1,1
+TXN0006,3648.93,other,New York,desktop,2,18,1,1,1
+TXN0007,3523.15,shopping,Other,mobile,9,3,0,0,0
+TXN0008,2267.6,food,Los Angeles,desktop,11,7,1,0,0
+TXN0009,856.52,travel,Los Angeles,desktop,12,9,0,1,0
+TXN0010,3880.22,travel,New York,desktop,12,9,0,0,0
+TXN0011,2836.33,food,Los Angeles,tablet,15,13,1,0,0
+TXN0012,1233.89,other,Phoenix,desktop,23,19,1,1,1
+TXN0013,4986.63,travel,Phoenix,desktop,2,25,0,0,1
+TXN0014,800.75,entertainment,Phoenix,mobile,12,13,1,1,0
+TXN0015,4304.04,shopping,Other,tablet,3,22,1,1,1
+TXN0016,2174.39,entertainment,New York,tablet,23,9,0,0,0
+TXN0017,1492.93,other,Phoenix,mobile,4,12,0,0,0
+TXN0018,2443.54,shopping,Chicago,desktop,7,2,0,0,0
+TXN0019,2430.47,shopping,Phoenix,mobile,4,22,1,0,1
+TXN0020,4362.29,entertainment,Los Angeles,tablet,23,23,0,1,1
+TXN0021,3358.76,food,Houston,tablet,14,4,0,0,1
+TXN0022,106.15,other,Los Angeles,tablet,7,1,0,0,0
+TXN0023,4527.19,food,New York,tablet,7,9,1,0,1
+TXN0024,3617.04,other,Phoenix,desktop,7,26,1,1,1
+TXN0025,485.56,entertainment,Chicago,desktop,13,15,0,0,1
+TXN0026,3641.34,shopping,Los Angeles,mobile,6,18,1,0,1
+TXN0027,1393.45,travel,New York,desktop,17,4,0,0,0
+TXN0028,4631.91,travel,Los Angeles,desktop,15,16,0,1,1
+TXN0029,824.02,shopping,Houston,desktop,14,10,1,1,0
+TXN0030,1484.24,shopping,Phoenix,tablet,17,2,1,0,1
+TXN0031,2384.47,other,Los Angeles,mobile,16,3,0,0,0
+TXN0032,3376.39,travel,Houston,mobile,18,8,0,0,0
+TXN0033,2918.78,other,Chicago,desktop,6,22,1,0,0
+TXN0034,655.26,food,Houston,desktop,2,1,1,0,0
+TXN0035,1066.56,food,Los Angeles,desktop,2,29,0,1,1
+TXN0036,2191.48,other,Other,desktop,19,26,0,1,0
+TXN0037,518.83,travel,Chicago,mobile,3,24,0,1,1
+TXN0038,1053.94,food,Los Angeles,tablet,20,28,1,1,1
+TXN0039,4540.89,shopping,New York,tablet,13,27,1,0,0
+TXN0040,3855.82,food,Los Angeles,tablet,14,18,1,0,1
+TXN0041,4725.31,travel,Phoenix,mobile,11,19,0,1,1
+TXN0042,1541.98,shopping,Chicago,mobile,21,8,0,1,0
+TXN0043,4420.79,entertainment,Phoenix,tablet,4,30,0,0,1
+TXN0044,4054.05,entertainment,New York,mobile,23,30,1,1,1
+TXN0045,4320.46,travel,Chicago,mobile,22,4,1,0,1
+TXN0046,1112.95,entertainment,Chicago,desktop,7,8,0,0,0
+TXN0047,1393.74,shopping,Chicago,desktop,20,17,1,1,0
+TXN0048,577.59,food,Los Angeles,tablet,8,2,0,1,0
+TXN0049,3932.35,entertainment,Phoenix,tablet,3,13,0,1,0
+TXN0050,2180.85,other,Phoenix,tablet,23,24,0,1,1
+TXN0051,4744.42,food,Phoenix,desktop,21,28,0,1,1
+TXN0052,3334.8,food,Houston,tablet,9,18,0,0,0
+TXN0053,4701.88,travel,Phoenix,tablet,9,13,0,1,1
+TXN0054,2150.01,other,Phoenix,tablet,10,15,1,1,0
+TXN0055,2556.36,travel,Other,mobile,9,17,1,0,0
+TXN0056,3755.94,food,Los Angeles,mobile,4,1,0,0,1
+TXN0057,3056.76,shopping,Houston,desktop,20,19,0,1,1
+TXN0058,1220.68,shopping,New York,desktop,7,6,1,0,0
+TXN0059,4587.43,shopping,Houston,mobile,14,22,1,1,1
+TXN0060,3596.65,other,Houston,tablet,14,29,0,1,1
+TXN0061,3759.13,food,Phoenix,desktop,20,8,1,1,0
+TXN0062,1429.36,food,Chicago,desktop,17,3,0,0,0
+TXN0063,3470.06,travel,New York,desktop,13,11,1,1,0
+TXN0064,4164.62,entertainment,Phoenix,tablet,0,28,1,1,0
+TXN0065,1759.44,entertainment,Houston,tablet,23,24,0,1,1
+TXN0066,2179.74,shopping,Houston,desktop,21,22,1,0,0
+TXN0067,4597.79,other,Phoenix,mobile,12,19,0,0,0
+TXN0068,679.36,entertainment,Los Angeles,mobile,8,13,1,0,0
+TXN0069,1688.17,entertainment,Chicago,desktop,8,27,0,1,1
+TXN0070,2697.56,food,Los Angeles,tablet,2,25,0,0,1
+TXN0071,997.6,shopping,Phoenix,mobile,7,5,1,0,0
+TXN0072,1090.6,food,Chicago,mobile,19,20,0,0,0
+TXN0073,541.39,shopping,Chicago,tablet,21,30,1,1,1
+TXN0074,992.45,other,Other,tablet,7,4,1,0,0
+TXN0075,2830.1,shopping,Chicago,tablet,13,22,1,0,0
+TXN0076,1706.81,entertainment,Houston,mobile,13,12,1,0,0
+TXN0077,3669.24,food,Phoenix,tablet,15,15,1,1,1
+TXN0078,1228.23,shopping,Chicago,desktop,7,25,1,1,1
+TXN0079,2472.04,food,Los Angeles,desktop,6,12,1,1,0
+TXN0080,2981.18,food,Phoenix,mobile,16,7,0,0,0
+TXN0081,2443.4,travel,Other,desktop,20,23,1,1,1
+TXN0082,466.17,travel,Houston,tablet,7,10,1,1,0
+TXN0083,1719.44,other,Chicago,desktop,22,15,1,1,0
+TXN0084,604.16,travel,Chicago,mobile,23,18,0,0,0
+TXN0085,2421.51,other,Phoenix,tablet,9,4,0,1,0
+TXN0086,898.03,shopping,Other,tablet,4,9,0,0,0
+TXN0087,3487.39,travel,Other,desktop,3,28,0,1,1
+TXN0088,2202.9,travel,New York,desktop,15,4,0,1,0
+TXN0089,2885.53,shopping,Los Angeles,mobile,18,10,0,0,0
+TXN0090,3822.45,other,Phoenix,tablet,7,25,1,1,1
+TXN0091,1487.47,other,Houston,desktop,18,20,0,0,0
+TXN0092,1039.73,travel,Chicago,tablet,2,6,0,0,0
+TXN0093,783.51,entertainment,Houston,tablet,19,16,1,0,0
+TXN0094,3535.07,entertainment,New York,tablet,7,30,1,0,1
+TXN0095,2723.27,travel,Chicago,mobile,2,2,0,1,1
+TXN0096,4121.38,food,Houston,mobile,14,23,1,1,1
+TXN0097,2502.86,entertainment,Houston,mobile,19,2,1,1,0
+TXN0098,130.3,travel,Other,tablet,18,1,1,0,0
+TXN0099,876.78,other,Other,desktop,8,6,1,1,0
+TXN0100,2350.58,entertainment,Chicago,desktop,21,4,0,1,0
+TXN0101,2477.85,entertainment,Phoenix,mobile,14,3,1,1,0
+TXN0102,4850.95,entertainment,Phoenix,mobile,21,28,1,1,0
+TXN0103,2592.68,other,Houston,tablet,14,25,0,0,0
+TXN0104,655.94,food,Houston,tablet,15,4,0,0,0
+TXN0105,1554.44,shopping,Phoenix,desktop,2,8,0,1,1
+TXN0106,3238.9,travel,Houston,tablet,9,17,1,1,1
+TXN0107,4901.24,travel,Houston,tablet,4,13,0,0,1
+TXN0108,1381.96,entertainment,Chicago,tablet,8,27,0,1,0
+TXN0109,4187.54,other,Other,desktop,4,15,1,1,1
+TXN0110,3814.6,entertainment,Houston,desktop,6,23,0,1,1
+TXN0111,3877.95,shopping,Chicago,tablet,15,23,1,1,1
+TXN0112,3962.18,travel,Houston,mobile,4,17,1,0,1
+TXN0113,2202.09,other,Houston,mobile,23,5,1,0,0
+TXN0114,3907.84,food,Chicago,tablet,22,13,0,1,1
+TXN0115,4296.85,entertainment,Chicago,tablet,22,29,1,0,1
+TXN0116,1174.62,food,Los Angeles,tablet,2,14,0,0,0
+TXN0117,3470.31,shopping,New York,desktop,1,10,1,1,1
+TXN0118,1221.74,entertainment,Phoenix,tablet,5,6,0,0,0
+TXN0119,1913.34,travel,Houston,tablet,4,8,1,1,1
+TXN0120,3334.54,entertainment,Chicago,tablet,17,6,0,1,1
+TXN0121,4938.27,food,Other,desktop,22,9,1,1,1
+TXN0122,1924.08,entertainment,New York,mobile,12,19,1,1,0
+TXN0123,1476.86,entertainment,Chicago,mobile,18,28,0,1,0
+TXN0124,4514.77,travel,Phoenix,desktop,7,21,0,1,1
+TXN0125,3604.92,travel,Other,mobile,20,21,0,1,1
+TXN0126,167.79,food,Other,mobile,2,30,1,1,1
+TXN0127,879.02,travel,Phoenix,desktop,16,17,1,0,0
+TXN0128,4123.62,entertainment,Chicago,tablet,10,26,0,1,1
+TXN0129,704.64,travel,Other,tablet,21,13,1,0,0
+TXN0130,70.58,other,New York,desktop,11,22,1,1,1

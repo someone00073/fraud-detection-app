@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — Fraud Shield</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="bg-scene"></div>
+<canvas id="matrixCanvas"></canvas>
+<canvas id="particleCanvas"></canvas>
+
+<div class="page-wrap auth-layout">
+  <div class="auth-container">
+
+    <!-- LEFT: Card + Branding -->
+    <div class="auth-left">
+      <div class="card-3d-wrap">
+        <div class="card-3d" id="creditCard">
+          <!-- Front -->
+          <div class="card-face card-front">
+            <div class="card-logo-row">
+              <div class="card-circles"><div class="c1"></div><div class="c2"></div></div>
+              <div class="card-brand-text"><span>FRAUD SHIELD</span><small>SECURE</small></div>
+            </div>
+            <div class="card-chip">
+              <div class="chip-c"></div><div class="chip-c"></div><div class="chip-c"></div>
+              <div class="chip-c"></div><div class="chip-c"></div><div class="chip-c"></div>
+              <div class="chip-c"></div><div class="chip-c"></div><div class="chip-c"></div>
+            </div>
+            <div class="card-number">•••• •••• •••• 4821</div>
+            <div class="card-bottom">
+              <div><div class="ci-label">Card Holder</div><div class="ci-value">FRAUD DETECTOR</div></div>
+              <div><div class="ci-label">Expires</div><div class="ci-value">12/28</div></div>
+            </div>
+          </div>
+          <!-- Back -->
+          <div class="card-face card-back">
+            <div class="card-stripe"></div>
+            <div class="card-sig">
+              <div class="sig-box"><span class="cvv">•••</span></div>
+            </div>
+            <div class="card-back-lbl">FRAUD DETECTION SHIELD</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="brand-title"><span class="gradient-text">Credit Card</span><br><span>Fraud Detection</span></div>
+        <p class="brand-desc" style="margin-top:10px;">AI-powered transaction monitoring with real-time fraud detection and analysis</p>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box"><div class="s-val">98.7%</div><div class="s-lbl">Accuracy</div></div>
+        <div class="stat-box"><div class="s-val">1M+</div><div class="s-lbl">Transactions</div></div>
+        <div class="stat-box"><div class="s-val">$50B</div><div class="s-lbl">Protected</div></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Login Form -->
+    <div class="auth-right">
+      <div class="glass-card form-card">
+        <div class="form-icon">🛡️</div>
+        <div class="form-title">Welcome Back</div>
+        <div class="form-sub">Sign in to your Fraud Shield account</div>
+
+        {% for cat, msg in get_flashed_messages(with_categories=True) %}
+          <div class="flash {{ cat }}"><span>{{ '⚠️' if cat == 'error' else '✅' }}</span> {{ msg }}</div>
+        {% endfor %}
+
+        <form method="POST" action="/login">
+          <div class="form-group">
+            <label class="form-label">Username</label>
+            <div class="input-wrap">
+              <span class="input-icon">👤</span>
+              <input class="form-input" type="text" name="username" placeholder="Enter username" required autocomplete="username">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="input-wrap">
+              <span class="input-icon">🔒</span>
+              <input class="form-input" type="password" id="loginPass" name="password" placeholder="Enter password" required autocomplete="current-password">
+              <button type="button" class="pass-toggle" onclick="togglePass('loginPass',this)">👁️</button>
+            </div>
+          </div>
+          <button class="btn-primary" type="submit" id="loginBtn">
+            <span id="loginBtnText">🚀 Sign In</span>
+          </button>
+        </form>
+
+        <div class="link-row">No account? <a href="/signup">Create one</a></div>
+        
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="/static/script.js"></script>
+<script>
+  // ===== 3D Card Mouse Tracking =====
+  const card = document.getElementById('creditCard');
+  let isFlipped = false;
+
+  card.addEventListener('mousemove', function(e) {
+    if (isFlipped) return;
+    const rect = this.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    this.style.animation = 'none';
+    this.style.transform = `rotateY(${x * 30}deg) rotateX(${-y * 30}deg) scale(1.05)`;
+  });
+
+  card.addEventListener('mouseleave', function() {
+    if (isFlipped) return;
+    this.style.animation = '';
+    this.style.transform = '';
+  });
+
+  card.addEventListener('click', function() {
+    isFlipped = !isFlipped;
+    this.style.animation = 'none';
+    this.classList.toggle('flipped');
+  });
+
+  // Button loading spinner
+  document.querySelector('form').addEventListener('submit', function() {
+    const btn = document.querySelector('.btn-primary');
+    btn.disabled = true;
+
+    document.getElementById('loginBtnText').innerHTML =
+      '<div class="spinner" style="margin:0 auto;"></div>';
+  });
+</script>
+</body>
+</html>
