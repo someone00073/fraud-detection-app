@@ -3,7 +3,7 @@ import sqlite3
 from datetime import datetime
 from functools import wraps
 
-from flask import (Flask, render_template, request, redirect, url_for,
+from flask import (Flask, render_template, request, redirect,
                    session, flash, jsonify, send_file)
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -15,11 +15,24 @@ from model import load_model, encode_input
 import smtplib
 from email.mime.text import MIMEText
 
+# ---------------- APP ----------------
+app = Flask(__name__)
+app.secret_key = "secret123"
+app.config["PROPAGATE_EXCEPTIONS"] = True
+
+# ---------------- PATHS ----------------
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "database.db")
+OUTPUT_PATH = os.path.join(BASE_DIR, "output.csv")
+
 # ---------------- EMAIL ----------------
 EMAIL_USER = os.environ.get("EMAIL_USER")
 EMAIL_PASS = os.environ.get("EMAIL_PASS")
 
 def send_email(subject, body):
+    if not EMAIL_USER or not EMAIL_PASS:
+        return
+
     msg = MIMEText(body)
     msg['Subject'] = subject
     msg['From'] = EMAIL_USER
@@ -34,14 +47,6 @@ def send_email(subject, body):
         print("Email sent successfully")
     except Exception as e:
         print("Email error:", e)
-
-# ---------------- APP ----------------
-app = Flask(__name__)
-app.secret_key = "secret123"
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-DB_PATH = os.path.join(BASE_DIR, "database.db")
-OUTPUT_PATH = os.path.join(BASE_DIR, "output.csv")
 
 # ---------------- DB ----------------
 def get_db():
@@ -63,9 +68,8 @@ def init_db():
         )
         """)
         conn.commit()
- 
 
-        # create admin
+        # create admin if not exists
         exists = conn.execute("SELECT * FROM users WHERE username='admin'").fetchone()
         if not exists:
             conn.execute("""
@@ -79,9 +83,12 @@ def init_db():
                 "active"
             ))
             conn.commit()
-init_db()  
 
-# ---------------- AUTH DECORATORS ----------------
+# ✅ INIT DB AFTER DEFINING FUNCTION
+with app.app_context():
+    init_db()
+
+# ---------------- AUTH ----------------
 def login_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
@@ -130,10 +137,7 @@ def login():
         session["username"] = username
         session["is_admin"] = (username == "admin")
 
-        try:
-            send_email("Login Alert", f"{username} logged in")
-        except Exception as e:
-            print("Email failed:", e)
+        send_email("Login Alert", f"{username} logged in")
 
         return redirect("/admin" if username == "admin" else "/dashboard")
 
@@ -161,10 +165,7 @@ def signup():
                 ))
                 conn.commit()
 
-                try:
-                    send_email("Login Alert", f"{username} logged in")
-                except Exception as e:
-                    print("Email failed:", e)
+            send_email("Signup", f"New user: {username}")
             return redirect("/login")
 
         except:
@@ -178,30 +179,29 @@ def signup():
 def dashboard():
     return render_template("dashboard.html")
 
+# ---------------- PREDICT ----------------
 @app.route('/predict', methods=['POST'])
 @login_required
 def predict():
     try:
         data = request.get_json()
 
-        # 🔥 RULE CHECK FIRST
         amount = float(data.get('amount', 0))
         hour = float(data.get('hour', 0))
         new_device = int(data.get('new_device', 0))
 
         if amount > 3000 or hour < 5 or new_device == 1:
-            return jsonify({
-                'result': 1,
-                'confidence': 95   # fixed confidence for rule
-            })
+            return jsonify({'result': 1, 'confidence': 95})
 
-        # 🔥 MODEL
-        model, encoders = load_model()
+        try:
+            model, encoders = load_model()
+        except Exception as e:
+            print("MODEL ERROR:", e)
+            return jsonify({'error': 'Model failed'}), 500
+
         features = encode_input(data, encoders)
 
         pred = int(model.predict(features)[0])
-
-        # ✅ ADD THIS HERE
         prob = model.predict_proba(features)[0][1]
 
         return jsonify({
@@ -213,7 +213,7 @@ def predict():
         print("ERROR:", e)
         return jsonify({'error': 'Prediction failed'}), 500
 
-
+# ---------------- CSV ----------------
 @app.route("/upload_csv", methods=["POST"])
 @login_required
 def upload_csv():
@@ -224,7 +224,11 @@ def upload_csv():
     else:
         df = pd.read_csv(file)
 
-    model, encoders = load_model()
+    try:
+        model, encoders = load_model()
+    except Exception as e:
+        print("MODEL ERROR:", e)
+        return "Model failed", 500
 
     results = []
     for _, row in df.iterrows():
@@ -274,7 +278,6 @@ def logout():
     session.clear()
     return redirect("/login")
 
+# ---------------- RUN ----------------
 if __name__ == "__main__":
-    load_model()
-    import os
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
