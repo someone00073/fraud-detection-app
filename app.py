@@ -16,8 +16,8 @@ import smtplib
 from email.mime.text import MIMEText
 
 # ---------------- EMAIL ----------------
-EMAIL_USER = "maheshakkp96@gmail.com"
-EMAIL_PASS = "szamtwdbyumcpstd"
+EMAIL_USER = os.environ.get("EMAIL_USER")
+EMAIL_PASS = os.environ.get("EMAIL_PASS")
 
 def send_email(subject, body):
     msg = MIMEText(body)
@@ -38,9 +38,10 @@ def send_email(subject, body):
 # ---------------- APP ----------------
 app = Flask(__name__)
 app.secret_key = "secret123"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-DB_PATH = "database.db"
-OUTPUT_PATH = "output.csv"
+DB_PATH = os.path.join(BASE_DIR, "database.db")
+OUTPUT_PATH = os.path.join(BASE_DIR, "output.csv")
 
 # ---------------- DB ----------------
 def get_db():
@@ -62,6 +63,7 @@ def init_db():
         )
         """)
         conn.commit()
+ 
 
         # create admin
         exists = conn.execute("SELECT * FROM users WHERE username='admin'").fetchone()
@@ -77,6 +79,7 @@ def init_db():
                 "active"
             ))
             conn.commit()
+init_db()  
 
 # ---------------- AUTH DECORATORS ----------------
 def login_required(f):
@@ -127,7 +130,10 @@ def login():
         session["username"] = username
         session["is_admin"] = (username == "admin")
 
-        send_email("Login Alert", f"{username} logged in")
+        try:
+            send_email("Login Alert", f"{username} logged in")
+        except Exception as e:
+            print("Email failed:", e)
 
         return redirect("/admin" if username == "admin" else "/dashboard")
 
@@ -155,7 +161,10 @@ def signup():
                 ))
                 conn.commit()
 
-            send_email("Signup", f"New user: {username}")
+                try:
+                    send_email("Login Alert", f"{username} logged in")
+                except Exception as e:
+                    print("Email failed:", e)
             return redirect("/login")
 
         except:
@@ -266,7 +275,6 @@ def logout():
     return redirect("/login")
 
 if __name__ == "__main__":
-    init_db()
     load_model()
     import os
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
